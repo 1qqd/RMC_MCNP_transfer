@@ -1,0 +1,47 @@
+///  圆柱屏蔽层
+UNIVERSE 0 
+CELL 1   9&10&7&-8&-1   mat = 1       
+CELL 2   9&10&7&-8&1&-2   mat = 2  
+cell 3   9&10&7&-8&2&-3   mat = 3 
+cell 4   -9:-10:-7:8:3   mat = 0   void = 1
+
+@var1 = {10: 30: 5, 35} #1                            //多重变量定义，循环变量定义
+@var2 = {15, 20: 40: 5} #1                            //多重变量定义，循环变量定义
+@var3 = {2*51 , 2*{50 : + : 2 : 2}} #2                //展开层级、快捷变量定义
+@var4 = {3*{-2,-4}}#1                                 //快捷变量定义
+@var5 = 6*{-1} #1                                     //快捷变量定义
+
+SURFACE
+surf  1  CZ  var1  
+surf  2  CZ  var2
+surf  3  CZ  [var3+0.001]
+surf  7  pz  -5  bc=3 pair=8 //周期边界条件
+surf  8  pz  5   bc=3 pair=7 //周期边界条件
+surf  9  px  var4  bc=1
+surf  10 py  var5  bc=1
+
+MATERIAL
+mat 1   -1.0
+	1001.71c 2
+	8016.71c 1
+mat 2 	-2.52
+	5010.71c   4
+	5011.71c   16
+	6000.71c   5
+mat 3  -11.3437
+	82207.71c 1
+
+@var1 = {2000, 3000, 4000}                                //循环变量重复定义
+
+FixedSource 
+particle  population = var1
+
+EXTERNALSOURCE
+Source 1  particle=1 fraction=0.5 position=0 0 0 energy=4 axis=0 0 1 polar=1 0 0 polartheta=d3 radius=d1 height=d2 
+Distribution 1 type=-1 value=0 10  probability=1
+Distribution 2 type=4 value=-5 5  probability=1
+Distribution 3 type=4 value=0 1.570796326794895 probability=1
+
+Tally
+CellTally 1  type=1 cell=1 3
+CellTally 2  type=1 cell=1 3

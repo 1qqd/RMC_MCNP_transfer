@@ -1,0 +1,55 @@
+Universe 0
+cell 1    -1 & 2 &-3      mat = 1    move=0 0 0  rotate=1 0 0   0 1 0   0 0 1
+cell 2    -15&-17         mat = 1    move=0 0 0  rotate=0 1 0  -1 0 0   0 0 1
+cell 3    -1 & 2 &-3      mat = 1    move=85.34 -45.34 0   rotate=0.70710678 -0.70710678 0  0.70710678 0.70710678 0   0 0 1
+cell 4    9&-10&11&-12&13&-14  fill=1    move=100 100 0   rotate=0 1 0  -1 0 0   0 0 1
+cell 5    -16             mat = 1 
+cell 6    -4 & !1 & !2 &!3&!4 &!5         mat = 2  
+cell 7    4               mat = 0 void=1
+
+Universe 1  MOVE=-30 -30 0 lat=1 pitch=10 10 1  scope=7 7 1 fill=
+    2 2 2 2 2 2 2
+    2 2 2 2 2 2 2
+    2 2 2 2 2 2 2
+    2 2 2 2 2 2 2
+    2 2 2 2 2 2 2
+    2 2 2 2 2 2 2
+    2 2 2 2 2 2 2
+
+Universe 2  move=5 5 0
+cell 11  -8    mat=1
+cell 12   8    mat=1
+
+@var1 = 9.5                                    //数值定义
+@var2 = [POWER(var1,2.5)]                      //函数定义
+@var3 = {var1, 10: 15: 1}                      //循环变量定义
+@var4 = [var2+0.002]                           //函数定义中含有函数定义
+surface
+surf 1 cx  [ROUND(var1)]                       //使用变量的表达式计算
+surf 2 px  [-25*2]
+surf 3 px  [EXP(3)]
+surf 4 so  var2                                //使用变量计算
+surf 8 cz  4.5
+surf 9 px  -20
+surf 10 px  var3
+surf 11 py  -20
+surf 12 py  [var3+4]                           //使用多重变量的表达式计算
+surf 13 pz  -20
+surf 14 pz  var4
+surf 15 k/x 15 0 0 1 1
+surf 16 tz  0 0 0 200 10 10  
+surf 17 px  40
+
+material
+mat 1  -10.196
+       92235.71c   6.9100E-03
+       92238.71c   2.2062E-01
+       8016.71c    4.5510E-01
+mat 2  9.9977E-02
+       1001.71c    6.6643E-02
+       8016.71c    3.3334E-02
+
+criticality
+poweriter population=1000 20 50 keff0=1
+initsrc point=0 0 0
+

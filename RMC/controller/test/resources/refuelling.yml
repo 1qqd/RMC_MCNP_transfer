@@ -1,0 +1,37 @@
+# -*- coding:utf-8 -*-
+# author: Kaiwen Li
+# date: 2018-4-28
+# title: Burnup calculation of PWR 2*2 pins
+---
+
+refuelling:
+  !refuelling
+  lists:
+    - !do_refuel
+      step: 1 # after which step will the refuelling performs.
+      plan:
+        - !refuel_univ
+          universe: 8 # in the future, this should be the name rather than the index of the universe.
+          position: [1] # the sequence to include the universe to be refuelled, 1 > 8.
+          alias:
+            column: [A, B]
+            row: [1, 2]
+            new: "NEW_" # prefix to mark the new assemblies,
+                        # the number of the new assembly universe is appended to the rear of it.
+          mapping:
+            - [A002,  B002]
+            - [NEW_9, A001]
+    - !do_refuel
+      step: 3
+      plan:
+        - !refuel_univ
+          universe: 8 # in the future, this should be the name rather than the index of the universe.
+          position: [1] # the sequence to include the universe to be refuelled, 1 > 8.
+          alias:
+            column: [A, B]
+            row: [1, 2]
+            new: "NEW_" # prefix to mark the new assemblies,
+                        # the number of the new assembly universe is appended to the rear of it.
+          mapping:
+            - [B001,  A002  ]
+            - [A001,  NEW_10]

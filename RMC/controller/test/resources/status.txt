@@ -1,0 +1,7 @@
+RMC:
+- cycle:
+  - burnup:
+      step: 1
+      output: refuelling/inp.FMTinp.step1
+      status: done
+  - output: refuelling/inp.FMTinp.step1

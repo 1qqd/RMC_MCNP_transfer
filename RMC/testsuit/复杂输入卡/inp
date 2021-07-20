@@ -1,0 +1,22 @@
+@sin=[SIN(5)-SIN(4)]
+@sqrt= [SQRT(18)*2.3]
+@powersqrt=[POWER(LOG(sqrt), sin)+ROUND(PI)]
+sin sqrt
+
+
+@repeat3 = {1.64e-46,PI,2*  {NA, {1.5:2.5:0.5}, {3E1:+:3: 2}} } #  5
+@repeat#2 = {3.14, 2*1.7,sin}  #1
+@repeat1={2*{sqrt,}, {1.0 :0.9:- 0.1} }#1
+@sin=[SIN(6)-COS(3)]
+@repeat-2={sin, {1:-:0:2}, sqrt}#3
+@repeat-3 = 2*{3*.9E+3, }#4
+@rep&eat-1 = {8, 10.0, -PI}#2
+@cal1 = [3*repeat-3]
+
+rep&eat-1 repeat1 repeat#2 repeat-2
+
+repeat#2 repeat-3 rep&eat-1 repeat3
+
+sin powersqrt
+
+

@@ -1,0 +1,132 @@
+# -*- coding:utf-8 -*-
+# author: Kaiwen Li
+# date: 2019-11-15
+# title: Burnup calculation of PWR 2*2 pins
+---
+
+geometry:
+  !geometry
+  universes:
+    - !universe
+      number: 0
+      name: base
+      cells:
+        - !cell # Assembly inside
+          number: 1
+          name: Assembly inside
+          bounds: "6 & -7 & 8 & -9"
+          fill: [rods]
+        - !cell # Assembly outside
+          number: 2
+          name: Assembly outside
+          bounds: "-6 : 7 : -8 : 9"
+          material: void
+    - !universe
+      number: 8
+      name: rods
+      lattice:
+        !lattice
+        type: rectangle
+        pitch: [1.26, 1.26, 1.0]
+        scope: [2, 2, 1]
+        fill:
+          - [1, 1]
+          - [5, 1]
+    - !universe
+      number: 1
+      name: fuel rod
+      transformation:
+        !transformation
+        move: [0.63, 0.63, 0]
+      cells:
+        - !cell
+          number: 3
+          name: fuel
+          bounds: "-1"
+          material: fuel
+          inner: True
+          temperature: 300.0
+        - !cell
+          number: 4
+          name: air
+          bounds: "1 & -2"
+          material: air
+          inner: True
+        - !cell
+          number: 5
+          name: Zr
+          bounds: "2 & -3"
+          material: Zr
+          inner: True
+        - !cell
+          number: 6
+          name: water
+          bounds: "3"
+          material: water
+    - !universe
+      number: 5
+      name: guide tube
+      transformation:
+        !transformation
+        move: [0.63, 0.63, 0]
+      cells:
+        - !cell
+          number: 7
+          name: water in the guide tube
+          bounds: "-4"
+          material: water
+          inner: True
+        - !cell
+          number: 8
+          name: air in the guide tube
+          bounds: "4 & -5"
+          material: air
+          inner: True
+        - !cell
+          number: 9
+          name: water outside the guide tube
+          bounds: "5"
+          material: water
+
+surfaces:
+  !surfaces
+  surfaces:
+    - !surface
+      number: 1
+      type: z-cylinder
+      parameters: [0.4096]
+    - !surface
+      number: 2
+      type: z-cylinder
+      parameters: [0.4178]
+    - !surface
+      number: 3
+      type: z-cylinder
+      parameters: [0.4750]
+    - !surface
+      number: 4
+      type: z-cylinder
+      parameters: [0.5690]
+    - !surface
+      number: 5
+      type: z-cylinder
+      parameters: [0.6147]
+    - !surface
+      number: 6
+      type: x-plane
+      reflect: True
+      parameters: [0]
+    - !surface
+      number: 7
+      type: x-plane
+      reflect: True
+      parameters: [2.52]
+    - !surface
+      number: 8
+      type: y-plane
+      reflect: True
+      parameters: [0]
+    - !surface
+      number: 9
+      type: y-plane
+      parameters: [2.52]

@@ -1,0 +1,73 @@
+UNIVERSE 0
+cell 1   -1 : 5 : 6 : -10     mat = 0         void=1
+cell 2   1 & -2 & -6 & 7      mat = 1        // h
+cell 3   2 & -3 & -6 & 7      mat = 2        // c
+cell 4   3 & -4 & -6 & 7      mat = 3        // be
+cell 5   4 & -5 & -6 & 7      mat = 4        // u
+cell 6   1 & -2 & -7 & 8      mat = 1        // o
+cell 7   2 & -3 & -7 & 8      mat = 2        // na
+cell 8   3 & -4 & -7 & 8      mat = 3        // h
+cell 9   4 & -5 & -7 & 8      mat = 4        // be
+cell 10  1 & -2 & -8 & 9      mat = 1        // be
+cell 11  2 & -3 & -8 & 9      mat = 2        // u
+cell 12  3 & -4 & -8 & 9      mat = 3        // c
+cell 13  4 & -5 & -8 & 9      mat = 4        // na
+cell 14  1 & -2 & -9 & 10     mat = 1        // o
+cell 15  2 & -3 & -9 & 10     mat = 2        // h
+cell 16  3 & -4 & -9 & 10     mat = 3        // o
+cell 17  4 & -5 & -9 & 10     mat = 4        // be
+
+@var1 = -30                             //变量定义
+@var2 = [ var1 + 10 ]                   //使用变量表达式定义
+@var5 = -30
+@var6 = -20
+@var3 = 0
+SURFACE
+surf  1  PX  var1                       //变量使用
+surf  2  PX  var2 
+surf  3  PX   var3  
+@var4 = 20
+surf  4  PX   var4 
+@var1 = [ 3 * 10 * COS( 0 ) ]           //变量重复定义
+surf  5  PX   var1  
+surf  6  PY   30 
+surf  7  PY   20
+@var1 = [var5+30]                       //变量重复定义
+surf  8  PY  var1
+surf  9  PY  var6
+surf 10  PY  var5
+
+MATERIAL
+mat 1 	-0.0001
+	    1002.71c   1
+mat 2 	-1.8
+	    13027.71c  1
+mat 3 	-0.968
+	    14028.71c  1
+mat 4   0.04760215
+        92233.71c  4.6712e-2
+        92234.71c  5.9026e-4
+        92235.71c  1.4281e-5
+        92238.71c  2.8561e-4
+
+Physics
+ParticleMode N p
+Photon  PPRODUCEE = 0  TTB = 0  ANNIHILATION = 0  COHERENT = 1
+        PHOTONNUCLEUS =0  DOPPLER = 0  UPERERG = 100 ERGCUTGMA = 1.0E-3  ELECMULTITIMES = 1.0
+
+//FixedSource 
+//PARTICLE  population = 1000 point = 5 5 5 PARTYPE=2 erg=20
+
+//PLOT  ColorScheme=9
+//PlotID 4  Type = slice   Color = Mat  Pixels=900 900   Vertexes=-30 -30 0  30 30 0
+
+CRITICALITY
+PowerIter   population = 500 5 20   keff0 = 1.0 
+InitSrc point = 5 5 5
+
+Tally
+CellTally 1 particle=1 type=1 cell=2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+CellTally 2 Particle=2 type=1 cell=2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+CellTally 3 Particle=1 type=6 cell=2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+CellTally 4 Particle=2 type=6 cell=2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+//Bin 1 type=1 bound=0 1.00E-2 1.00E-1 10 20 50 70 100
