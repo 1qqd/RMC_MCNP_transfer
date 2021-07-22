@@ -94,6 +94,9 @@ class PlainParser:
                 elif card == 'MESH':
                     meshmodel = self.__parse_mesh(card_list[1:])
                     self.parsed_model.model['mesh'] = meshmodel
+                elif card == 'SURFACE':
+                    surfmodel = self.__parse_surface(card_list[1:])
+                    self.parsed_model.model['surface'] = surfmodel
                 else:
                     self.parsed_model.model['unparsed'].append(cards)
                     # raise ValueError('%s card can not be recognized!' % card_list[0])
@@ -240,6 +243,27 @@ class PlainParser:
             i += 2
 
         return mat
+
+    @staticmethod
+    def __parse_surface(content):
+        surfaces = []
+        for option in content:
+            surf_number = int(option.split(' ', 3)[1])
+            surf_type = option.split(' ', 3)[2].upper()
+            surf = PlainParser._parse_options(option.split(' ', 2)[2], Surface.surf_type_para)
+            surf_parameter = surf[surf_type]
+            if 'BC' in surf:
+                surf_boundary = surf['BC']
+            else:
+                surf_boundary = None
+            if 'PAIR' in surf:
+                surf_pair = surf['PAIR']
+            else:
+                surf_pair = None
+            surface = Surface(number=surf_number, stype=surf_type, parameters=surf_parameter, boundary=surf_boundary,
+                              pair=surf_pair)
+            surfaces.append(surface)
+        return Surfaces(surfaces=surfaces)
 
     @staticmethod
     def __parse_mesh(content):

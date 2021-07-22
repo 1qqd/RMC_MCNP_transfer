@@ -58,8 +58,15 @@ class Model(YMLModelObject):
 
     def postprocess(self):
         self.check()
+        self.proc_lat5()
         if self.model['geometry'] is not None:
             self.model['geometry'].postprocess()
+
+    def proc_lat5(self):
+        post_surfs = self.model['geometry'].proc_lat5()
+        if post_surfs:
+            for surf in post_surfs:
+                self.model['surface'].add_surface(surf)
 
     # todo: the sequence of output has not been defined.
     def __str__(self):
