@@ -22,34 +22,33 @@ class PlainParser:
         self.content = converter.format_to_cards()
         converter.clear()
 
-    def _prepare(self):
-        self.parsed_model.model['geometry'] = Geometry()
-
     @property
     def parsed(self):
         if self._is_parsed:
             return self.parsed_model
         self._read_in()
-        self._prepare()
 
         geometry_card = self.content[0].split('\n')
         surface_card = self.content[1].split('\n')
+        surface_model = self.__parse_surface(surface_card)
+        [cells, geom_unparsed] = self.__parse_geometry(geometry_card)
+        geometry_model = Geometry(cells=cells)
 
         if len(self.content) > 1:
             other_card = self.content[2]
             other_cards = self.split_othercard(other_card)
             mat_card = other_cards[0]
-            materialmodel = self.__parse_material(mat_card)
-            self.parsed_model.model['material'] = materialmodel
+            material_model = self.__parse_material(mat_card)
+            self.parsed_model.model['material'] = material_model
 
-        surface_model = self.__parse_surface(surface_card)
-
-        test = str(materialmodel)
+            test = str(material_model)
         test2 = str(surface_model)
+        test3 = str(geometry_model)
 
         pass
 
-    def split_othercard(self, other_card):
+    @staticmethod
+    def split_othercard(other_card):
         lines = other_card.split('\n')
         mat_lines = []
         un_parsed = []
@@ -114,7 +113,7 @@ class PlainParser:
                 else:
                     surf_type = words[1].upper()
                     other_vars = ' '.join(words[1:])
-                [surf, unpar] = PlainParser._parse_options(other_vars, Surface.surf_type_para)
+                [surf, unpar] = PlainParser._parse_option(other_vars, Surface.surf_type_para)
                 if unpar is not '':
                     surf_unparsed += 'Warning: No parsed card: ' + str(unpar) + ' '
                 surface = Surface(number=surf_id, stype=surf_type, parameters=surf[surf_type],
@@ -126,24 +125,85 @@ class PlainParser:
         return Surfaces(surfaces=surfaces, unparsed=unparsed)
 
     @staticmethod
-    def _parse_options(content, cards):
+    def __parse_geometry(content):
+        cells = []
+        universes = []
+        geo_unparsed = ''
+        for cell in content:
+            cell_len = len(cell.split())
+            cell_id = int(cell.split()[0])
+            unparsed = ''
+
+            if cell.split()[1].upper() != 'LIKE':  # like 'j m d geom params'
+                index = 0
+                mat_id = int(cell.split()[1])
+                mat_density = 0
+                if mat_id == 0:
+                    index = 2
+                else:
+                    index = 3
+                    mat_density = float(cell.split()[2])
+                cell_geom = ''
+                cell_params = ['IMP:N', 'LAT', 'IMP:P', 'E', 'T', 'FILL', 'U']
+                geom_no_end = True
+                while geom_no_end:
+                    options = cell.split()[index:]
+                    for param in cell_params:
+                        if re.match(param, options[0], re.I):
+                            geom_no_end = False
+                            break
+                    if not geom_no_end:
+                        break
+                    cell_geom += '(' + options[0] + ')' + '&'
+                    index += 1
+                    if index >= cell_len:
+                        geom_no_end = False
+                        break
+
+                cell_geom = cell_geom[0:len(cell_geom) - 1]
+                cell_dict = {}
+                if index != cell_len:
+                    unparsed_items = ' '.join(cell.split()[index:])
+                    while unparsed_items is not '':
+                        [cell_dict_item, unparsed_items_new] = PlainParser._parse_option(unparsed_items,
+                                                                                         Cell.card_option_types)
+                        if cell_dict_item:
+                            cell_dict[unparsed_items.split()[0].upper()] = cell_dict_item[
+                                unparsed_items.split()[0].upper()]
+                        if unparsed_items_new is '':
+                            unparsed_items = unparsed_items_new
+                        elif unparsed_items.split()[0] == unparsed_items_new.split()[0]:
+                            unparsed += unparsed_items.split()[0]
+                            unparsed_items = ' '.join(unparsed_items.split()[1:])
+                        else:
+                            unparsed_items = unparsed_items_new
+
+                parsed_cell = Cell(cell_id, material=mat_id, density=mat_density, bounds=cell_geom, unparsed=unparsed)
+                parsed_cell.add_options(cell_dict)
+                cells.append(parsed_cell)
+
+            else:  # like 'j LIKE n BUT list'
+                geo_unparsed += cell + '\n'
+        return [cells, geo_unparsed]
+
+    @staticmethod
+    def _parse_option(content, cards):
         options = content.replace(' = ', ' ').split()
         options_dict = {}
         unparsed = []
-        if options:
-            options[0] = options[0].upper()
-            if options[0] in cards:
-                dtype = cards[options[0]]
-                if dtype[0] == 'list':
-                    [opt_val, index] = PlainParser._parse_list(options, dtype[1])
-                else:
-                    [opt_val, index] = PlainParser._parse_val(options, dtype[0])
-
-                options_dict[options[0]] = opt_val
-                # 移除已经解析过的部分
-                unparsed = ' '.join(options[index:])
+        index = 0
+        options[0] = options[0].upper()
+        if options[0] in cards:
+            dtype = cards[options[0]]
+            if dtype[0] == 'list':
+                [opt_val, index] = PlainParser._parse_list(options, dtype[1])
             else:
-                raise ValueError('%s can not be recognized in %s.' % (options[0], content))
+                [opt_val, index] = PlainParser._parse_val(options, dtype[0])
+
+            options_dict[options[0]] = opt_val
+            # 移除已经解析过的部分
+        unparsed = ' '.join(options[index:])
+
         return [options_dict, unparsed]
 
     @staticmethod

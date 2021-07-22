@@ -36,7 +36,7 @@ class Materials(BaseModel):
         for mt in self.mts:
             card += str(mt) + '\n'
         if self._unparsed != '':
-            card += self._unparsed
+            card += 'Warning: No parsed card in Material block: \n' + self._unparsed
         card += '\n\n'
         return card
 
