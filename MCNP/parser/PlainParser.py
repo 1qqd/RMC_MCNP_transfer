@@ -42,10 +42,12 @@ class PlainParser:
             materialmodel = self.__parse_material(mat_card)
             self.parsed_model.model['material'] = materialmodel
 
+        surface_model = self.__parse_surface(surface_card)
+
         test = str(materialmodel)
+        test2 = str(surface_model)
 
         pass
-
 
     def split_othercard(self, other_card):
         lines = other_card.split('\n')
@@ -81,10 +83,88 @@ class PlainParser:
     def __parse_single_mat(mat_card):
         opts = mat_card.split()
         mat = Material(mat_id=int(opts[0][1:]))
-
         i = 1
         while i < len(opts):
             mat.update_nuclide(Nuclide(opts[i], opts[i + 1]))
             i += 2
-
         return mat
+
+    @staticmethod
+    def __parse_surface(content):
+        surfaces = []
+        unparsed = ''
+        for option in content:
+            words = option.split()
+            surf_unparsed = ''
+            surf_match = re.match(r'([0-9]+) ', option)
+            if surf_match:
+                surf_boundary = None
+                surf_pair = None
+                surf_id = int(words[0])
+                if re.match(r'[0-9\+\-]+', words[1]):
+                    var = int(words[1])
+                    if var < 0:
+                        surf_boundary = 3  # 周期边界条件
+                        surf_pair = abs(var)
+                    if var > 0:
+                        surf_unparsed += 'Warning: No processed transformation id ' + str(var) + ' for Surface ' + str(
+                            surf_id) + ' '
+                    surf_type = words[2].upper()
+                    other_vars = ' '.join(words[2:])
+                else:
+                    surf_type = words[1].upper()
+                    other_vars = ' '.join(words[1:])
+                [surf, unpar] = PlainParser._parse_options(other_vars, Surface.surf_type_para)
+                if unpar is not '':
+                    surf_unparsed += 'Warning: No parsed card: ' + str(unpar) + ' '
+                surface = Surface(number=surf_id, stype=surf_type, parameters=surf[surf_type],
+                                  boundary=surf_boundary, pair=surf_pair, unparsed=surf_unparsed)
+                surfaces.append(surface)
+            else:
+                unparsed += option + '\n'
+
+        return Surfaces(surfaces=surfaces, unparsed=unparsed)
+
+    @staticmethod
+    def _parse_options(content, cards):
+        options = content.replace(' = ', ' ').split()
+        options_dict = {}
+        unparsed = []
+        if options:
+            options[0] = options[0].upper()
+            if options[0] in cards:
+                dtype = cards[options[0]]
+                if dtype[0] == 'list':
+                    [opt_val, index] = PlainParser._parse_list(options, dtype[1])
+                else:
+                    [opt_val, index] = PlainParser._parse_val(options, dtype[0])
+
+                options_dict[options[0]] = opt_val
+                # 移除已经解析过的部分
+                unparsed = ' '.join(options[index:])
+            else:
+                raise ValueError('%s can not be recognized in %s.' % (options[0], content))
+        return [options_dict, unparsed]
+
+    @staticmethod
+    def _parse_list(options, func=str):
+        index = 1
+        opt_list = []
+        while index < len(options):
+            try:
+                value = func(options[index])
+                index += 1
+                opt_list.append(value)
+            except ValueError:
+                break
+        # todo: check
+        return [opt_list, index]
+
+    @staticmethod
+    def _parse_val(options, func=str):
+        if func == bool:
+            return [func(float(options[1])), 2]
+        elif func == int:  # 二院项目要求智能识别int和float
+            return [func(float(options[1])), 2]
+        else:
+            return [func(options[1]), 2]

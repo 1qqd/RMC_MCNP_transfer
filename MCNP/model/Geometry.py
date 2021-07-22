@@ -432,10 +432,11 @@ class Geometry(BaseModel):
 class Surfaces(BaseModel):
     yaml_tag = u'!surfaces'
 
-    def __init__(self, surfaces=None):
+    def __init__(self, surfaces=None, unparsed=''):
         self.surfaces = surfaces
         if self.surfaces is None:
             self.surfaces = []
+        self.unparsed = unparsed
 
     def check(self):
         pass
@@ -472,9 +473,11 @@ class Surfaces(BaseModel):
                 f'The surface {surf_num} is not in Surfaces of input')
 
     def __str__(self):
-        s = 'SURFACE\n'
+        s = ''
         for surf in self.surfaces:
             s += str(surf)
+        if self.unparsed:
+            s += 'Warning: No parsed cards in Surface block: \n' + self.unparsed
         s += '\n\n'
         return s
 
@@ -514,64 +517,23 @@ class Surface(BaseModel):
         'PAIR': [int]
     }
 
-    def __init__(self, number=None, stype=None, parameters=None, boundary=None, pair=None):
-        self._number = number
-        self._type = stype
-        self._parameters = parameters
-        self._boundary = boundary
-        self._pair = pair
-
-    @property
-    def number(self):
-        return self._number
-
-    @number.setter
-    def number(self, number):
-        self._number = number
-
-    @property
-    def type(self):
-        return self._type
-
-    @type.setter
-    def type(self, stype):
-        self._type = stype
-
-    @property
-    def parameters(self):
-        return self._parameters
-
-    @parameters.setter
-    def parameters(self, para):
-        self._parameters = para
-
-    @property
-    def boundary(self):
-        return self._boundary
-
-    @boundary.setter
-    def boundary(self, boundary):
-        self._boundary = boundary
-
-    @property
-    def pair(self):
-        return self._pair
-
-    @pair.setter
-    def boundary(self, pair):
-        self._pair = pair
+    def __init__(self, number=None, stype=None, parameters=None, boundary=None, pair=None, unparsed=None):
+        self.number = number
+        self.type = stype
+        self.parameters = parameters
+        self.boundary = boundary
+        self.pair = pair
+        self.unparsed = unparsed
 
     def check(self):
-        assert self._number >= 0
+        assert self.number >= 0
 
     def __str__(self):
-        card = 'SURF ' + str(self._number) + ' ' + self._type + ' '
-        surf_para = ' '.join([str(x) for x in self._parameters]) if isinstance(self._parameters, list) else ' ' + str(
-            self._parameters)
+        card = str(self.number) + ' ' + self.type + ' '
+        surf_para = ' '.join([str(x) for x in self.parameters]) if isinstance(self.parameters, list) else ' ' + str(
+            self.parameters)
         card += surf_para
-        if self._boundary is not None:
-            card += ' BC = ' + str(self._boundary)
-        if self._pair is not None:
-            card += ' PAIR = ' + str(self._pair)
         card += '\n'
+        if self.unparsed:
+            card += self.unparsed + '\n'
         return card
