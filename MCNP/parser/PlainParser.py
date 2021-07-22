@@ -113,12 +113,15 @@ class PlainParser:
                 else:
                     surf_type = words[1].upper()
                     other_vars = ' '.join(words[1:])
-                [surf, unpar] = PlainParser._parse_option(other_vars, Surface.surf_type_para)
-                if unpar is not '':
-                    surf_unparsed += 'Warning: No parsed card: ' + str(unpar) + ' '
-                surface = Surface(number=surf_id, stype=surf_type, parameters=surf[surf_type],
-                                  boundary=surf_boundary, pair=surf_pair, unparsed=surf_unparsed)
-                surfaces.append(surface)
+                if surf_type in Surface.surf_type_para:
+                    [surf, unpar] = PlainParser._parse_option(other_vars, Surface.surf_type_para)
+                    if unpar is not '':
+                        surf_unparsed += 'Warning: No parsed card: ' + str(unpar) + ' '
+                    surface = Surface(number=surf_id, stype=surf_type, parameters=surf[surf_type],
+                                      boundary=surf_boundary, pair=surf_pair, unparsed=surf_unparsed)
+                    surfaces.append(surface)
+                else:
+                    unparsed += option + '\n'
             else:
                 unparsed += option + '\n'
 
