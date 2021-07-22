@@ -1,8 +1,8 @@
 # -*- coding:utf-8 -*-
-# author: Kaiwen Li
-# date: 2019-11-15
+# author: Shen PF
+# date: 2021-07-20
 
-from RMC.model.input.base import YMLModelObject as BaseModel
+from MCNP.model.base import YMLModelObject as BaseModel
 import numpy as np
 
 

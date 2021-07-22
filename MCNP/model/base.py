@@ -58,8 +58,10 @@ class Model(YMLModelObject):
         for key in self.model.keys():
             if key is not 'unparsed' and self.model[key] is not None:
                 s += str(self.model[key])
+
+        s += 'Warning: No parsed blocks are list below\n'
         for card in self.model['unparsed']:
-            s += card + '\n\n'
+            s += card + '\n'
         return s
 
     def __getitem__(self, item):

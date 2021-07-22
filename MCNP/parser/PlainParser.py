@@ -44,7 +44,7 @@ class PlainParser:
             mat_card = other_cards[0]
             material_model = self.__parse_material(mat_card)
             self.parsed_model.model['materials'] = material_model
-            self.parsed_model.model['unparsed'] = other_cards[1:]
+            self.parsed_model.model['unparsed'] = other_cards[1]
 
         return self.parsed_model
 

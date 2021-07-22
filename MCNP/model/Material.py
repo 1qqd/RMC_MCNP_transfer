@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
-# author: Xiaoyu Guo
+# -*- coding:utf-8 -*-
+# author: Shen PF
+# date: 2021-07-20
 
 from RMC.model.input.base import YMLModelObject as BaseModel
 
