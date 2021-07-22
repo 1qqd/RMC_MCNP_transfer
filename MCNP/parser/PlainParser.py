@@ -30,22 +30,24 @@ class PlainParser:
 
         geometry_card = self.content[0].split('\n')
         surface_card = self.content[1].split('\n')
-        surface_model = self.__parse_surface(surface_card)
+
         [cells, geom_unparsed] = self.__parse_geometry(geometry_card)
         geometry_model = Geometry(cells=cells)
+        surface_model = self.__parse_surface(surface_card)
+
+        self.parsed_model.model['surface'] = surface_model
+        self.parsed_model.model['geometry'] = geometry_model
 
         if len(self.content) > 1:
             other_card = self.content[2]
             other_cards = self.split_othercard(other_card)
             mat_card = other_cards[0]
             material_model = self.__parse_material(mat_card)
-            self.parsed_model.model['material'] = material_model
+            self.parsed_model.model['materials'] = material_model
+            self.parsed_model.model['unparsed'] = other_cards[1:]
 
-            test = str(material_model)
-        test2 = str(surface_model)
-        test3 = str(geometry_model)
+        return self.parsed_model
 
-        pass
 
     @staticmethod
     def split_othercard(other_card):
