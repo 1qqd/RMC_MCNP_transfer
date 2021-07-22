@@ -19,8 +19,7 @@ class Cell(BaseModel):
         'INNER': [bool],
         'MOVE': ['list', float, 3],
         'ROTATE': ['list', float, 9],
-        'LIKE': [int]
-
+        'NOBURN': [bool],
     }
 
     def __init__(self, name=None, number=-1, bounds='', material=None, volume=0, fill=None, inner=False,

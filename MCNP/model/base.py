@@ -39,6 +39,7 @@ class Model(YMLModelObject):
                 'geometry': None,
                 'surface': None,
                 'materials': None,
+                'unparsed': None
             }
         self.model = model
 
@@ -52,7 +53,6 @@ class Model(YMLModelObject):
         if self.model['geometry'] is not None:
             self.model['geometry'].postprocess()
 
-    # todo: the sequence of output has not been defined.
     def __str__(self):
         s = ''
         for key in self.model.keys():
@@ -61,10 +61,6 @@ class Model(YMLModelObject):
         for card in self.model['unparsed']:
             s += card + '\n\n'
         return s
-
-    @property
-    def geometry(self):
-        return self.model['geometry']
 
     def __getitem__(self, item):
         if item in self.model:
