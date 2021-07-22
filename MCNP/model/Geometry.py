@@ -47,6 +47,8 @@ class Cell(BaseModel):
         s = '%d %d ' % (self.number, self.material)
         if self.density is not None:
             s += '%f ' % self.density
+        else:
+            s += '         '
         s += self.bounds + ' '
         if self.fill is not None:
             s += 'fill=%d ' % self.fill

@@ -137,7 +137,7 @@ class PlainParser:
             if cell.split()[1].upper() != 'LIKE':  # like 'j m d geom params'
                 index = 0
                 mat_id = int(cell.split()[1])
-                mat_density = 0
+                mat_density = None
                 if mat_id == 0:
                     index = 2
                 else:
@@ -148,7 +148,7 @@ class PlainParser:
                 geom_no_end = True
                 while geom_no_end:
                     options = cell.split()[index:]
-                    for param in cell_params:
+                    for param in Cell.card_option_types:
                         if re.match(param, options[0], re.I):
                             geom_no_end = False
                             break

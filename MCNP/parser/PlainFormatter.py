@@ -43,6 +43,7 @@ class PlainFormatter:
             changed_inp = re.sub(r'\n[ ]*[cC][^\n]*\n', '\n', changed_inp)
             # Remove the inline comments.
             changed_inp = re.sub(r'\n(?P<content>[ ]*[^ ]+.*?)\$[^\n]*\n', '\n\g<content>\n', changed_inp)
+            changed_inp = re.sub(r'(?P<front>[0-9\.]+)-(?P<back>[0-9]+)', '\g<front>e-\g<back>', changed_inp)
             self._s_changed = (changed_inp != self.content)
             self.content = changed_inp
 
@@ -121,7 +122,13 @@ class PlainFormatter:
     def format_to_cards(self):
         if not self._formatted:
             self.format()
+        cards = self.content.split('\n\n')
 
+        lines = cards[0].split('\n')
+        cards[0] = '\n'.join([line.strip() for line in lines])
+        lines = cards[1].split('\n')
+        cards[1] = '\n'.join([line.strip() for line in lines])
+        self.content = '\n\n'.join(cards)
         # each card will be split into the element of a list.
         return self.content.replace('\n ', ' ').split('\n\n')
 
