@@ -201,7 +201,7 @@ class Universe(BaseModel):
 class Lattice(BaseModel):
     yaml_tag = u'!lattice'
 
-    def __init__(self, pitch=np.zeros(3), scope=np.zeros(3), fill=None, type=None, theta=None,
+    def __init__(self, pitch=np.zeros(3), scope=np.zeros(3), fill=np.ones(1), type=None, theta=None,
                  length=None, radius=None, fill_ball=None, fill_interval=None, max_scope=None,  # lat=5
                  matric=None, particle=None, pf=None, rad=None, typerg=None, sizerg=None, pfcorrect=False, rsa=None,
                  dem=None, time=None  # lat=3 4
