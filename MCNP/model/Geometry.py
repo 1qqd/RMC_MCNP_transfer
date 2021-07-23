@@ -17,7 +17,8 @@ class Cell(BaseModel):
         'IMP:N': [float]
     }
 
-    def __init__(self, number=-1, bounds='', material=None, density=None, fill=None, inner=False, u=0, lat=None, unparsed = None):
+    def __init__(self, number=-1, bounds='', material=None, density=None, fill=None, inner=False, u=0, lat=None,
+                 unparsed=None, impn=None):
         self.number = number
         self.bounds = bounds
         self.fill = fill
@@ -27,6 +28,7 @@ class Cell(BaseModel):
         self.universe = u
         self.lat = lat
         self.unparsed = unparsed
+        self.impn = impn
 
     def check(self):
         assert self.number >= 0
@@ -42,6 +44,8 @@ class Cell(BaseModel):
             self.universe = options['U']
         if 'LAT' in options.keys():
             self.lat = options['LAT']
+        if 'IMP:N' in options.keys():
+            self.impn = options['IMP:N']
 
     def __str__(self):
         s = '%d %d ' % (self.number, self.material)

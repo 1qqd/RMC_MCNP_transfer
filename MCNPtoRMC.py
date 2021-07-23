@@ -5,6 +5,7 @@
 
 import RMC.model.input.Material as RMCMat
 import RMC.model.input.Geometry as RMCGeometry
+import RMC.model.input.Criticality as RMCCriticality
 from RMC.model.input.base import Model as RMCModel
 import MCNP.model.Geometry as MCNPGeometry
 import MCNP.model.Material as MCNPMat
@@ -12,7 +13,7 @@ import MCNP.parser.PlainParser as MCNPParser
 
 print("hello! Begin with the MCNP to RMC transformation tools.\n")
 
-inp_MCNP = 'm0525'  # '06'  # 'm0525' #
+inp_MCNP = '06'  # 'm0525' #
 
 M_model = MCNPParser.PlainParser(inp_MCNP).parsed
 
@@ -56,6 +57,49 @@ R_materials_model = RMCMat.Materials(mats=R_materials, unparsed=R_sabs)
 test2 = str(R_materials_model)
 
 # transfer geometry block
+R_cells = []
+R_universes = []
+R_universes_ids = []
+for cell in M_model.model['geometry'].cells:
+    out_universe_id = 0
+    if cell.universe:
+        out_universe_id = cell.universe
+    R_cell = RMCGeometry.Cell(number=cell.number, bounds=cell.bounds.replace('#', '!'), material=cell.material,
+                              fill=cell.fill, impn=cell.impn)
 
+    established_univ = False
+    for index in range(len(R_universes_ids)):
+        if R_universes_ids[index] == out_universe_id:
+            R_universes[index].cells.append(R_cell)
+            established_univ = True
+
+    if not established_univ:
+        R_lattice = None
+        if cell.lat:
+            R_lattice = RMCGeometry.Lattice(type=cell.lat, fill=[cell.fill])
+        R_universe = RMCGeometry.Universe(number=out_universe_id, lattice=R_lattice)
+        R_universe.cells.append(R_cell)
+        R_universes.append(R_universe)
+        R_universes_ids.append(out_universe_id)
+
+R_geometry_model = RMCGeometry.Geometry(universes=R_universes)
+test3 = str(R_geometry_model)
+
+# combine RMC model
+R_model.model['geometry'] = R_geometry_model
+R_model.model['surface'] = R_surfaces_model
+R_model.model['material'] = R_materials_model
+
+R_model.model['criticality'] = RMCCriticality.Criticality(
+    unparsed='PowerIter population = 10000 50 300  keff0 = 1\nInitSrc point = 0 0 0')
+R_model.model['plot'] = 'PLOT\nPlotID 1 Type = slice Color = cell Pixels=900 900 Vertexes=-100 -100 0 100 100 0'
+
+
+# output 2 files
+with open(inp_MCNP+'_parsed_RMC_model', 'w+') as f:
+    f.write(str(R_model))
+
+with open(inp_MCNP+'_parsed_MCNP_model', 'w+') as f:
+    f.write(str(M_model))
 
 pass

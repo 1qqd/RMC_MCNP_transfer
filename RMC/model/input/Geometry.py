@@ -22,8 +22,8 @@ class Cell(BaseModel):
         'NOBURN': [bool],
     }
 
-    def __init__(self, name=None, number=-1, bounds='', material=None, volume=0, fill=None, inner=False,
-                 temperature=None, density=0.0, void=False, transformation=None, noburn=0):
+    def __init__(self, name=None, number=-1, bounds='', material=None, volume=None, fill=None, inner=False,
+                 temperature=None, density=None, void=False, transformation=None, noburn=0, impn = None):
         self.name = name
         self.number = number
         self.bounds = bounds
@@ -37,6 +37,7 @@ class Cell(BaseModel):
         self.transformation = transformation
         self.include = None  # included universe
         self.noburn = noburn
+        self.impn = impn
 
     def check(self):
         # assert self.temperature > 0
@@ -84,6 +85,8 @@ class Cell(BaseModel):
             s += 'vol=%f ' % self.volume
         if self.density is not None:
             s += 'dens=%f ' % self.density
+        if self.impn is not None:
+            s += 'imp:n=%f' % self.impn
         if self.void:
             s += 'void=1 '
         if self.noburn:
