@@ -122,6 +122,7 @@ class PlainFormatter:
     def format_to_cards(self):
         if not self._formatted:
             self.format()
+        '''    
         cards = self.content.split('\n\n')
 
         lines = cards[0].split('\n')
@@ -129,6 +130,7 @@ class PlainFormatter:
         lines = cards[1].split('\n')
         cards[1] = '\n'.join([line.strip() for line in lines])
         self.content = '\n\n'.join(cards)
+        '''
         # each card will be split into the element of a list.
         return self.content.replace('\n ', ' ').split('\n\n')
 
