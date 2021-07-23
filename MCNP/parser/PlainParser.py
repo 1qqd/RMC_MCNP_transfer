@@ -3,6 +3,7 @@
 # date: 2021-07-20
 
 import re
+import copy
 from MCNP.parser.PlainFormatter import PlainFormatter
 from MCNP.model.base import Model as InputModel
 from MCNP.model.Geometry import *
@@ -47,7 +48,6 @@ class PlainParser:
             self.parsed_model.model['unparsed'] = other_cards[1]
 
         return self.parsed_model
-
 
     @staticmethod
     def split_othercard(other_card):
@@ -149,7 +149,6 @@ class PlainParser:
                     index = 3
                     mat_density = float(cell.split()[2])
                 cell_geom = ''
-                cell_params = ['IMP:N', 'LAT', 'IMP:P', 'E', 'T', 'FILL', 'U']
                 geom_no_end = True
                 while geom_no_end:
                     options = cell.split()[index:]
@@ -167,18 +166,21 @@ class PlainParser:
 
                 cell_geom = cell_geom[0:len(cell_geom) - 1]
                 cell_dict = {}
+                cell_card_options = copy.deepcopy(Cell.card_option_types)
                 if index != cell_len:
                     unparsed_items = ' '.join(cell.split()[index:])
                     while unparsed_items is not '':
+                        if 'LAT' in cell_dict and 'FILL' in cell_card_options:
+                            cell_card_options.pop('FILL')
                         [cell_dict_item, unparsed_items_new] = PlainParser._parse_option(unparsed_items,
-                                                                                         Cell.card_option_types)
+                                                                                         cell_card_options)
                         if cell_dict_item:
                             cell_dict[unparsed_items.split()[0].upper()] = cell_dict_item[
                                 unparsed_items.split()[0].upper()]
                         if unparsed_items_new is '':
                             unparsed_items = unparsed_items_new
                         elif unparsed_items.split()[0] == unparsed_items_new.split()[0]:
-                            unparsed += unparsed_items.split()[0]
+                            unparsed += ' ' + unparsed_items.split()[0]
                             unparsed_items = ' '.join(unparsed_items.split()[1:])
                         else:
                             unparsed_items = unparsed_items_new

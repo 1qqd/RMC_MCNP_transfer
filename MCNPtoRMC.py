@@ -74,7 +74,7 @@ def transfer(inp_MCNP):
         if not established_univ:
             R_lattice = None
             if cell.lat:
-                R_lattice = RMCGeometry.Lattice(type=cell.lat, fill=[cell.fill])
+                R_lattice = RMCGeometry.Lattice(type=cell.lat)
                 R_universe1 = RMCGeometry.Universe(number=out_universe_id, lattice=R_lattice)
                 R_universe2 = RMCGeometry.Universe(number=out_universe_id * 100 + 1)
                 R_universe2.cells.append(R_cell)
