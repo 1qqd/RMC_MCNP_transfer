@@ -88,6 +88,9 @@ def transfer(inp_MCNP):
                 R_universes.append(R_universe)
                 R_universes_ids.append(out_universe_id)
 
+    # 调整 universe 顺序
+    R_universes = sorted(R_universes, key=lambda x: x.number)
+
     R_geometry_model = RMCGeometry.Geometry(universes=R_universes)
     test3 = str(R_geometry_model)
 
