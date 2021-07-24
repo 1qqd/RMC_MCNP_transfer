@@ -101,7 +101,7 @@ def transfer(inp_MCNP):
 
     R_model.model['criticality'] = RMCCriticality.Criticality(
         unparsed='PowerIter population = 10000 50 300  keff0 = 1\nInitSrc point = 0 0 0')
-    R_model.model['plot'] = 'PLOT\nPlotID 1 Type = slice Color = cell Pixels=900 900 Vertexes=-100 -100 0 100 100 0'
+    R_model.model['plot'] = 'PLOT\nPlotID 1 Type = slice Color = cell Pixels=10000 10000 Vertexes=-100 -100 0 100 100 0\nPlotID 2 type = slice color = cell pixels=10000 10000 vertexes=-100 0 -100 100 0 100'
 
     # output 2 files
     with open(inp_MCNP + '_parsed_RMC_model', 'w+') as f:
