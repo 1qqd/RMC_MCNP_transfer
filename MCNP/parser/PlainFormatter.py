@@ -56,7 +56,7 @@ class PlainFormatter:
         while self._special_define_processed:  # process the %d nR / ni / nm pattern
             self._special_define_processed = False
 
-            reg = r'([0-9\.]+) ([1-9]*)[Rr]'   # like '2 4R'
+            reg = r'([0-9\.]+) ([1-9]*)[Rr] '   # like '2 4R '
             searched = re.search(reg, changed_inp)
             if searched:
                 rep_index = list(searched.span())
@@ -92,7 +92,7 @@ class PlainFormatter:
                 self._special_define_processed = (changed_inp != self.content)
                 continue
 
-            reg = r'([0-9\.]+) ([1-9\.]+)[Mm]'  # like '2 4m'
+            reg = r'([0-9\.]+) ([1-9\.]+)[Mm] '  # like '2 4m '
             searched = re.search(reg, changed_inp)
             if searched:
                 rep_index = list(searched.span())

@@ -14,6 +14,8 @@ def transfer(inp_MCNP):
     # inp_MCNP = '06'  # 'm0525' #
 
     M_model = MCNPParser.PlainParser(inp_MCNP).parsed
+    with open(inp_MCNP + '_parsed_MCNP_model', 'w+') as f:
+        f.write(str(M_model))
 
     R_model = RMCModel()
 
@@ -106,8 +108,5 @@ def transfer(inp_MCNP):
     # output 2 files
     with open(inp_MCNP + '_parsed_RMC_model', 'w+') as f:
         f.write(str(R_model))
-
-    with open(inp_MCNP + '_parsed_MCNP_model', 'w+') as f:
-        f.write(str(M_model))
 
     print('file: [' + inp_MCNP + '] have been processed!\n')
