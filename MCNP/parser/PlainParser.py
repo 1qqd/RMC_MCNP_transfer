@@ -95,11 +95,15 @@ class PlainParser:
         surfaces = []
         unparsed = ''
         for option in content:
-            words = option.split()
+            surf_boundary = None
             surf_unparsed = ''
+            reflect_match = re.match(r'\*', option)
+            if reflect_match:
+                surf_boundary = 2
+                option = option[1:]
             surf_match = re.match(r'([0-9]+) ', option)
+            words = option.split()
             if surf_match:
-                surf_boundary = None
                 surf_pair = None
                 surf_id = int(words[0])
                 if re.match(r'[0-9\+\-]+', words[1]):
