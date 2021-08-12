@@ -32,8 +32,6 @@ class PlainFormatter:
             changed_inp = re.sub(r'[\t\r\f\v]', ' ', self.content)
             changed_inp = re.sub(r'(?P<char>[^ ])=', '\g<char> =', changed_inp)
             changed_inp = re.sub(r'=(?P<char>[^ ])', '= \g<char>', changed_inp)
-            changed_inp = re.sub(r'(?P<char>[^ ])\*', '\g<char> *', changed_inp)
-            changed_inp = re.sub(r'\*(?P<char>[^ ])', '* \g<char>', changed_inp)
             changed_inp = changed_inp.replace('  ', ' ')
             changed_inp = changed_inp.replace('\n\n\n', '\n\n')
             changed_inp = re.sub(r'[ ]+\n', '\n', changed_inp)

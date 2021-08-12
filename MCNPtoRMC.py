@@ -47,7 +47,7 @@ def transfer(inp_MCNP):
         elif len(set(mat.densities)) > 1:
             duplicate_mats.append(mat.mat_id)
     if duplicate_mats:
-        print('Warning: find duplicated mat densities, id:\n' + str(duplicate_mats) + '\nPlease pay attention!')
+        print('Warning: find duplicated mat densities, id:' + str(duplicate_mats) + '\nPlease pay attention!')
 
     R_sabs = ''
     for mt in M_model.model['materials'].mts:
