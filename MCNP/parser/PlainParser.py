@@ -162,7 +162,11 @@ class PlainParser:
                             break
                     if not geom_no_end:
                         break
-                    cell_geom += '(' + options[0] + ')' + '&'
+                    if options[0] is ':':
+                        cell_geom = cell_geom[0:len(cell_geom)-1]
+                        cell_geom += options[0]
+                    else:
+                        cell_geom += '(' + options[0] + ')' + '&'
                     index += 1
                     if index >= cell_len:
                         geom_no_end = False
