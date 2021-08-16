@@ -33,7 +33,7 @@ class PlainParser:
         surface_card = self.content[1].split('\n')
 
         [cells, geom_unparsed] = self.__parse_geometry(geometry_card)
-        geometry_model = Geometry(cells=cells)
+        geometry_model = Geometry(cells=cells, unparsed=geom_unparsed)
         surface_model = self.__parse_surface(surface_card)
 
         self.parsed_model.model['surface'] = surface_model
