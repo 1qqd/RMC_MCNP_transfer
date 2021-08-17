@@ -64,9 +64,9 @@ class Material(BaseModel):
 
     def __str__(self):
         card = 'm'
-        card += str(self.mat_id) + '\n'
+        card += str(self.mat_id)
         for nuclide in self.nuclides:
-            card += ' ' + str(nuclide) + '\n'
+            card += '\n ' + str(nuclide)
         return card
 
 

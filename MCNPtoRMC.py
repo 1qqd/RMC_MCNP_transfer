@@ -46,6 +46,8 @@ def transfer(inp_MCNP):
             R_materials.append(R_mat)
         elif len(set(mat.densities)) > 1:
             duplicate_mats.append(mat.mat_id)
+            R_mat = RMCMat.Material(mat_id=mat.mat_id, density=mat.densities[0], nuclides=mat.nuclides)
+            R_materials.append(R_mat)
     if duplicate_mats:
         print('Warning: find duplicated mat densities, id:' + str(duplicate_mats) + '\nPlease pay attention!')
 
@@ -103,7 +105,7 @@ def transfer(inp_MCNP):
 
     R_model.model['criticality'] = RMCCriticality.Criticality(
         unparsed='PowerIter population = 10000 50 300  keff0 = 1\nInitSrc point = 0 0 0')
-    R_model.model['plot'] = 'PLOT\nPlotID 1 Type = slice Color = cell Pixels=10000 10000 Vertexes=-100 -100 0 100 100 0\nPlotID 2 type = slice color = cell pixels=10000 10000 vertexes=-100 0 -100 100 0 100'
+    R_model.model['plot'] = 'PLOT Continue-calculation = 1\nPlotID 1 Type = slice Color = cell Pixels=10000 10000 Vertexes=-100 -100 0 100 100 0\nPlotID 2 type = slice color = cell pixels=10000 10000 vertexes=-100 0 -100 100 0 100'
 
     # output 2 files
     with open(inp_MCNP + '_parsed_RMC_model', 'w+') as f:
