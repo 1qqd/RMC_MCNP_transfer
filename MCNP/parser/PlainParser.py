@@ -145,6 +145,7 @@ class PlainParser:
 
             if cell.split()[1].upper() != 'LIKE':  # like 'j m d geom params'
                 index = 0
+                # 解析几何中的材料信息
                 mat_id = int(cell.split()[1])
                 mat_density = None
                 if mat_id == 0:
@@ -152,6 +153,8 @@ class PlainParser:
                 else:
                     index = 3
                     mat_density = float(cell.split()[2])
+
+                # 解析几何中的面信息
                 cell_geom = ''
                 geom_no_end = True
                 while geom_no_end:
@@ -173,8 +176,11 @@ class PlainParser:
                         break
 
                 cell_geom = cell_geom[0:len(cell_geom) - 1]
+
+                # 解析几何中的其他选项
                 cell_dict = {}
                 cell_card_options = copy.deepcopy(Cell.card_option_types)
+                cell_card_options.pop('TRCL')
                 if index != cell_len:
                     unparsed_items = ' '.join(cell.split()[index:])
                     while unparsed_items is not '':
