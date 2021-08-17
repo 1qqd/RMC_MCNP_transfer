@@ -83,7 +83,7 @@ class Material(BaseModel):
         card += ' ' + str(self._mat_id)
         card += ' ' + str(self._density)
         for nuclide in self._nuclides:
-            card += ' ' + str(nuclide)
+            card += '\n ' + str(nuclide)
         return card
 
 
