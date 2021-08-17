@@ -99,7 +99,7 @@ class PlainParser:
             surf_unparsed = ''
             reflect_match = re.match(r'\*', option)
             if reflect_match:
-                surf_boundary = 2
+                surf_boundary = 1  # reflective boundary
                 option = option[1:]
             surf_match = re.match(r'([0-9]+) ', option)
             words = option.split()
