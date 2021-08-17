@@ -56,9 +56,9 @@ class PlainParser:
         un_parsed = []
         for line in lines:
             words = line.split(' ')
-            if re.match(r'm[1-9]+', words[0]):
+            if re.match(r'm[1-9]+', words[0], re.I):
                 mat_lines.append(line)
-            elif re.match(r'mt[1-9]+', words[0]):
+            elif re.match(r'mt[1-9]+', words[0], re.I):
                 mat_lines.append(line)
             else:
                 un_parsed.append(line)
