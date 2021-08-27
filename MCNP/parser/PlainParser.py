@@ -165,9 +165,9 @@ class PlainParser:
                             break
                     if not geom_no_end:
                         break
-                    if options[0] is ':':
+                    if options[0] in [':', '(', ')']:
                         cell_geom = cell_geom[0:len(cell_geom)-1]
-                        cell_geom += options[0]
+                        cell_geom += options[0]+' '
                     else:
                         cell_geom += '(' + options[0] + ')' + '&'
                     index += 1
@@ -175,7 +175,8 @@ class PlainParser:
                         geom_no_end = False
                         break
 
-                cell_geom = cell_geom[0:len(cell_geom) - 1]
+                cell_geom = cell_geom[0:len(cell_geom) - 1].replace(' ', '')
+                cell_geom = cell_geom.replace(')(', ')&(')
 
                 # 解析几何中的其他选项
                 cell_dict = {}
