@@ -36,23 +36,50 @@ class PlainParser:
         geometry_model = Geometry(cells=cells, unparsed=geom_unparsed)
         surface_model = self.__parse_surface(surface_card)
 
-        self.parsed_model.model['surface'] = surface_model
-        self.parsed_model.model['geometry'] = geometry_model
-
         if len(self.content) > 1:
             other_card = self.content[2]
             other_cards = self.split_othercard(other_card)
+            # process MAT card
             mat_card = other_cards[0]
             material_model = self.__parse_material(mat_card)
             self.parsed_model.model['materials'] = material_model
-            self.parsed_model.model['unparsed'] = other_cards[1]
+
+            # process IMP card
+            imp_card = other_cards[1]
+            imp_dict = self.__parse_importance(imp_card)
+            if 'IMP:N' in imp_dict:
+                imp_n_list = imp_dict['IMP:N']
+                for i in range(len(geometry_model.cells)):
+                    geometry_model.cells[i].impn = imp_n_list[i]
+            self.parsed_model.model['unparsed'] = other_cards[2]
+
+        self.parsed_model.model['surface'] = surface_model
+        self.parsed_model.model['geometry'] = geometry_model
 
         return self.parsed_model
+
+    @staticmethod
+    def __parse_importance(content):
+        unparsed = ''
+        imp_dict = {}
+        for option in content:
+            if re.match(r'IMP\:N', option, re.I):
+                words = option.split()
+                values = [float(words[i + 1]) for i in range(len(words) - 1)]
+                imp_dict["IMP:N"] = values
+            elif re.match(r'IMP\:E', option, re.I):
+                words = option.split()
+                values = [float(words[i + 1]) for i in range(len(words) - 1)]
+                imp_dict["IMP:E"] = values
+            else:
+                unparsed += option + '\n'
+        return imp_dict
 
     @staticmethod
     def split_othercard(other_card):
         lines = other_card.split('\n')
         mat_lines = []
+        imp_lines = []
         un_parsed = []
         for line in lines:
             words = line.split(' ')
@@ -60,9 +87,11 @@ class PlainParser:
                 mat_lines.append(line)
             elif re.match(r'mt[1-9]+', words[0], re.I):
                 mat_lines.append(line)
+            elif re.match(r'IMP', words[0], re.I):
+                imp_lines.append(line)
             else:
                 un_parsed.append(line)
-        return [mat_lines, un_parsed]
+        return [mat_lines, imp_lines, un_parsed]
 
     @staticmethod
     def __parse_material(content):
@@ -166,8 +195,8 @@ class PlainParser:
                     if not geom_no_end:
                         break
                     if options[0] in [':', '(', ')']:
-                        cell_geom = cell_geom[0:len(cell_geom)-1]
-                        cell_geom += options[0]+' '
+                        cell_geom = cell_geom[0:len(cell_geom) - 1]
+                        cell_geom += options[0] + ' '
                     else:
                         cell_geom += '(' + options[0] + ')' + '&'
                     index += 1
