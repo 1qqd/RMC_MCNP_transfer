@@ -5,6 +5,13 @@
 examples:
 >>> inp_MCNP = '06'
 >>> M2R.transfer(inp_MCNP)
+
+support * and ? in input (only one is supported):
+'*' matches any char
+'?' matches single char
+for example:
+'01?' matches ['011', '01a']
+'01*' matches ['01', '011234567']
 """
 
 

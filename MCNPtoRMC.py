@@ -80,10 +80,10 @@ def transfer(inp_MCNP):
             if cell.lat:
                 R_lattice = RMCGeometry.Lattice(type=cell.lat)
                 R_universe1 = RMCGeometry.Universe(number=out_universe_id, lattice=R_lattice)
-                R_universe2 = RMCGeometry.Universe(number=out_universe_id * 100 + 1)
+                R_universe2 = RMCGeometry.Universe(number=out_universe_id * 1000 + 1)
                 R_universe2.cells.append(R_cell)
                 R_universes.append(R_universe2)
-                R_universes_ids.append(out_universe_id * 100 + 1)
+                R_universes_ids.append(out_universe_id * 1000 + 1)
                 R_universes.append(R_universe1)
                 R_universes_ids.append(out_universe_id)
             else:
