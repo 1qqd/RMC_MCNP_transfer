@@ -46,7 +46,8 @@ class PlainFormatter:
             # Remove the comments that occupy the whole line.
             # Note that even if the comment mark 'c' is following some blanks,
             # this will not be regarded as a blank line.
-            changed_inp = re.sub(r'\n[ ]*[cC][^\n]*\n', '\n', changed_inp)
+            changed_inp = re.sub(r'\n[ ]*[cC$][^\n]*\n', '\n', changed_inp)
+            # remove the '$' comments lines
             # Remove the inline comments.
             changed_inp = re.sub(r'\n(?P<content>[ ]*[^ ]+.*?)\$[^\n]*\n', '\n\g<content>\n', changed_inp)
             changed_inp = re.sub(r'(?P<front>[0-9\.]+)-(?P<back>[0-9]+)', '\g<front>e-\g<back>', changed_inp)
